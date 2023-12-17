@@ -1,9 +1,10 @@
 #include <iostream>
 #include <vector>
-#include <cstdlib>
+#include <queue>
 
 using namespace std;
 
+/** /
 class kupac
 {
 public:
@@ -140,7 +141,7 @@ private:
 
 
 /**/
-vector<vector<int>> feldolgozas(kupac k, int rudhossz) {
+vector<vector<int>> feldolgozas(priority_queue<int, vector<int>, greater<int>> k, int rudhossz) {
 	/** /
 	cout << k.size() << endl;
 	int summa = k.pop() + k.pop();
@@ -151,36 +152,56 @@ vector<vector<int>> feldolgozas(kupac k, int rudhossz) {
 	/**/
 	vector<vector<int>> v;
 	int summa = 0;
+
+	while (k.size() > 1)
+	{
+		vector<int> t;
+		int rud = 0;
+
+		int a = k.top();
+		k.pop();
+		int b = k.top();
+		k.pop();
+		rud = a + b;
+		t.push_back(rud);
+		t.push_back(a);
+		t.push_back(b);
+
+		k.push(rud);
+
+		summa += rud;
+
+		v.push_back(t);
+		rudhossz -= rud;
+	}
+
+	/** /
 	while (k.size() > 0)
 	{
 		vector<int> t;
 		int rud = 0;
 		if (k.size() == 1 || summa != 0)
 		{
-			rud = k.pop();
+			rud = k.top();
+			k.pop();
 			t.push_back(summa + rud);
 			t.push_back(rud);
 		}
 		else {
-			int a = k.pop();
-			int b = k.pop();
-			rud = a + b;
+			int a = k.top();
+			k.pop();
+			int b = k.top();
+			k.pop();
+			rud = a+b;
 			t.push_back(summa + rud);
 			t.push_back(a);
 		}
 		summa += rud;
-		/*
-		t.push_back(summa);
-		t.push_back(rud);
-		*/
 
 		v.push_back(t);
-		// cout << "a vagott rud: " << rud << endl;
-		// cout << "a summa: " << summa << endl;
 		rudhossz -= rud;
-		// cout << "a rudhossz: " << rudhossz << endl;
-		// cout << "-------------" << endl;
 	}
+	/**/
 
 	// cout << summa << endl;
 	// cout << rudhossz << endl;
@@ -213,7 +234,7 @@ int main()
 	int N;
 	cin >> N;
 	int rudhossz = 0;
-	kupac k;
+	priority_queue<int, vector<int>, greater<int>> k;
 	for (int i = 0; i < N; i++)
 	{
 		int temp;
